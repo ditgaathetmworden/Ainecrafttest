@@ -89,40 +89,7 @@ export function FirebaseAuthProvider({ children }: { children: React.ReactNode }
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser)
       if (currentUser) {
-        let profile = await fetchProfile(currentUser.uid)
-        
-        // Auto-create profile with a fallback if none exists yet
-        if (!profile) {
-          const fallbackUsername = currentUser.email
-            ? currentUser.email.split('@')[0].toUpperCase().replace(/[^A-Z0-9_]/g, '')
-            : 'STEVE_' + currentUser.uid.slice(0, 5).toUpperCase()
-          
-          const newProfileData = {
-            id: currentUser.uid,
-            username: fallbackUsername,
-            displayName: currentUser.displayName || fallbackUsername,
-            bio: 'Pixel adventurer & Kraftedit creator.',
-            avatarUrl: `https://mc-heads.net/avatar/${fallbackUsername}/128`,
-            publicProfile: true,
-            skinsCreated: 0,
-            totalDownloads: 0,
-            followers: 0,
-            following: 0,
-            createdAt: serverTimestamp(),
-          }
-          
-          const userPath = `users/${currentUser.uid}`
-          try {
-            await setDoc(doc(db, 'users', currentUser.uid), newProfileData)
-            profile = {
-              ...newProfileData,
-              createdAt: new Date(),
-            } as UserProfile
-          } catch (err) {
-            handleFirestoreError(err, OperationType.CREATE, userPath)
-          }
-        }
-        
+        const profile = await fetchProfile(currentUser.uid)
         setUserProfile(profile)
       } else {
         setUserProfile(null)

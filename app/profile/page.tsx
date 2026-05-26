@@ -3,14 +3,22 @@
 import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Settings, Plus, Eye, Globe, Lock, Download, Heart, RefreshCw } from 'lucide-react'
+import { Settings, Plus, Eye, Globe, Lock, Download, Heart, RefreshCw, UserCircle } from 'lucide-react'
 import { BottomNav } from '@/components/layout/bottom-nav'
 import { SkinCard } from '@/components/gallery/skin-card'
 import { GoogleSignInButton } from '@/components/auth/google-sign-in-button'
+import { UsernameSetupDialog } from '@/components/auth/username-setup-dialog'
 import { mockSkins } from '@/lib/mock-data'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/components/providers/firebase-auth-provider'
 import { useRouter } from 'next/navigation'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 type FilterOption = 'all' | 'published' | 'drafts'
 
@@ -72,12 +80,28 @@ export default function ProfilePage() {
 
   if (!user) {
     return (
-      <div className="flex h-[100dvh] items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-3 text-center px-6">
-          <p className="text-sm text-muted-foreground mb-4">Please sign in to view your profile.</p>
-          <GoogleSignInButton />
-        </div>
-      </div>
+      <Dialog open={true}>
+        <DialogContent className="sm:max-w-md" showCloseButton={false}>
+          <DialogHeader>
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-obsidian-elevated mb-4">
+              <UserCircle className="h-6 w-6 text-neon" />
+            </div>
+            <DialogTitle className="text-center font-bold">Sign in required</DialogTitle>
+            <DialogDescription className="text-center text-sm">
+              Please sign in to view your profile and manage your custom skins.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center pt-4">
+            <GoogleSignInButton />
+          </div>
+        </DialogContent>
+      </Dialog>
+    )
+  }
+
+  if (user && !userProfile) {
+    return (
+      <UsernameSetupDialog user={user} onComplete={refreshUserProfile} />
     )
   }
 
