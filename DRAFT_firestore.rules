@@ -1,0 +1,121 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global catch-all safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // --- Validation Blueprints ---
+
+    function isValidUserProfileCreate(data) {
+      return data.keys().hasAll(['id', 'username', 'createdAt'])
+        && data.keys().size() <= 11
+        && data.id == request.auth.uid
+        && data.username is string && data.username.size() >= 3 && data.username.size() <= 16
+        && (!data.keys().contains('displayName') || (data.displayName is string && data.displayName.size() <= 50))
+        && (!data.keys().contains('bio') || (data.bio is string && data.bio.size() <= 500))
+        && (!data.keys().contains('avatarUrl') || (data.avatarUrl is string && data.avatarUrl.size() <= 1000))
+        && (!data.keys().contains('publicProfile') || data.publicProfile is bool)
+        && (!data.keys().contains('skinsCreated') || data.skinsCreated is int)
+        && (!data.keys().contains('totalDownloads') || data.totalDownloads is int)
+        && (!data.keys().contains('followers') || data.followers is int)
+        && (!data.keys().contains('following') || data.following is int)
+        && data.createdAt == request.time;
+    }
+
+    function isValidUserProfileUpdate(data, prev) {
+      return data.keys().hasAll(['id', 'username', 'createdAt'])
+        && data.keys().size() <= 11
+        && data.id == prev.id
+        && data.username == prev.username
+        && data.createdAt == prev.createdAt
+        && (!data.keys().contains('displayName') || (data.displayName is string && data.displayName.size() <= 50))
+        && (!data.keys().contains('bio') || (data.bio is string && data.bio.size() <= 500))
+        && (!data.keys().contains('avatarUrl') || (data.avatarUrl is string && data.avatarUrl.size() <= 1000))
+        && (!data.keys().contains('publicProfile') || data.publicProfile is bool)
+        && (!data.keys().contains('skinsCreated') || data.skinsCreated is int)
+        && (!data.keys().contains('totalDownloads') || data.totalDownloads is int)
+        && (!data.keys().contains('followers') || data.followers is int)
+        && (!data.keys().contains('following') || data.following is int);
+    }
+
+    function isValidSkinCreate(data) {
+      return data.keys().hasAll(['id', 'name', 'imageUrl', 'format', 'authorId', 'likes', 'downloads', 'isPublished', 'createdAt', 'updatedAt'])
+        && data.keys().size() <= 14
+        && data.id is string && data.id.size() <= 128
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && (!data.keys().contains('description') || (data.description is string && data.description.size() <= 1000))
+        && data.imageUrl is string && data.imageUrl.size() <= 2000
+        && (!data.keys().contains('thumbnailUrl') || (data.thumbnailUrl is string && data.thumbnailUrl.size() <= 2000))
+        && (data.format == '64x64' || data.format == '128x128')
+        && data.authorId == request.auth.uid
+        && (!data.keys().contains('authorName') || (data.authorName is string && data.authorName.size() <= 100))
+        && (!data.keys().contains('authorAvatar') || (data.authorAvatar is string && data.authorAvatar.size() <= 2000))
+        && data.likes == 0
+        && data.downloads == 0
+        && data.isPublished is bool
+        && (!data.keys().contains('tags') || (data.tags is list && data.tags.size() <= 10 && (data.tags.size() == 0 || data.tags[0] is string)))
+        && data.createdAt == request.time
+        && data.updatedAt == request.time;
+    }
+
+    function isValidSkinUpdate(data, prev) {
+      return data.keys().hasAll(['id', 'name', 'imageUrl', 'format', 'authorId', 'likes', 'downloads', 'isPublished', 'createdAt', 'updatedAt'])
+        && data.keys().size() <= 14
+        && data.id == prev.id
+        && data.authorId == prev.authorId
+        && data.createdAt == prev.createdAt
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && (!data.keys().contains('description') || (data.description is string && data.description.size() <= 1000))
+        && data.imageUrl is string && data.imageUrl.size() <= 2000
+        && (!data.keys().contains('thumbnailUrl') || (data.thumbnailUrl is string && data.thumbnailUrl.size() <= 2000))
+        && (data.format == '64x64' || data.format == '128x128')
+        && (!data.keys().contains('authorName') || (data.authorName is string && data.authorName.size() <= 100))
+        && (!data.keys().contains('authorAvatar') || (data.authorAvatar is string && data.authorAvatar.size() <= 2000))
+        && data.likes is int
+        && data.downloads is int
+        && data.isPublished is bool
+        && (!data.keys().contains('tags') || (data.tags is list && data.tags.size() <= 10 && (data.tags.size() == 0 || data.tags[0] is string)))
+        && data.updatedAt == request.time;
+    }
+
+    // --- Route Matches ---
+
+    match /users/{userId} {
+      allow get: if isOwner(userId) || resource.data.publicProfile == true;
+      allow list: if resource.data.publicProfile == true;
+      allow create: if isOwner(userId) && isValidUserProfileCreate(request.resource.data) && isValidId(userId);
+      allow update: if isOwner(userId) && isValidId(userId)
+        && isValidUserProfileUpdate(request.resource.data, resource.data)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName', 'bio', 'avatarUrl', 'publicProfile', 'skinsCreated', 'totalDownloads', 'followers', 'following']);
+      allow delete: if isOwner(userId) && isValidId(userId);
+    }
+
+    match /skins/{skinId} {
+      allow get: if resource.data.isPublished == true || (isSignedIn() && resource.data.authorId == request.auth.uid);
+      allow list: if resource.data.isPublished == true || (isSignedIn() && resource.data.authorId == request.auth.uid);
+      allow create: if isSignedIn() && isValidId(skinId) && isValidSkinCreate(request.resource.data);
+      allow update: if isSignedIn() && isValidId(skinId) && (
+        (isOwner(resource.data.authorId) && isValidSkinUpdate(request.resource.data, resource.data)
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'description', 'imageUrl', 'thumbnailUrl', 'format', 'authorName', 'authorAvatar', 'isPublished', 'tags', 'updatedAt']))
+        || 
+        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes', 'downloads']))
+      );
+      allow delete: if isSignedIn() && isValidId(skinId) && isOwner(resource.data.authorId);
+    }
+  }
+}

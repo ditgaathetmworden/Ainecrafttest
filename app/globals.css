@@ -1,0 +1,290 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+/* Obsidian Theme - Dark Mode Default */
+:root {
+  /* Core Obsidian Colors */
+  --obsidian-bg: #050505;
+  --obsidian-surface: #0a0a0a;
+  --obsidian-card: #111111;
+  --obsidian-elevated: #1a1a1a;
+  
+  /* Neon Green Accent */
+  --neon-green: #4ade80;
+  --neon-green-dim: #22c55e;
+  --neon-green-bright: #86efac;
+  
+  /* Semantic Tokens - Dark by Default */
+  --background: var(--obsidian-bg);
+  --foreground: #fafafa;
+  --card: var(--obsidian-card);
+  --card-foreground: #fafafa;
+  --popover: var(--obsidian-elevated);
+  --popover-foreground: #fafafa;
+  --primary: var(--neon-green);
+  --primary-foreground: #050505;
+  --secondary: var(--obsidian-elevated);
+  --secondary-foreground: #e5e5e5;
+  --muted: #262626;
+  --muted-foreground: #a3a3a3;
+  --accent: var(--obsidian-elevated);
+  --accent-foreground: var(--neon-green);
+  --destructive: #ef4444;
+  --destructive-foreground: #fafafa;
+  --border: #262626;
+  --input: #1a1a1a;
+  --ring: var(--neon-green);
+  --radius: 0.75rem;
+  
+  /* Chart Colors */
+  --chart-1: var(--neon-green);
+  --chart-2: #22d3ee;
+  --chart-3: #a78bfa;
+  --chart-4: #fb923c;
+  --chart-5: #f472b6;
+  
+  /* Sidebar */
+  --sidebar: var(--obsidian-surface);
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: var(--neon-green);
+  --sidebar-primary-foreground: #050505;
+  --sidebar-accent: var(--obsidian-elevated);
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: #262626;
+  --sidebar-ring: var(--neon-green);
+}
+
+/* Light mode override */
+.light {
+  --obsidian-bg: #f4f4f5;
+  --obsidian-surface: #ffffff;
+  --obsidian-card: #f9f9f9;
+  --obsidian-elevated: #e4e4e7;
+
+  --background: #f4f4f5;
+  --foreground: #09090b;
+  --card: #ffffff;
+  --card-foreground: #09090b;
+  --popover: #ffffff;
+  --popover-foreground: #09090b;
+  --primary: #16a34a;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #f4f4f5;
+  --accent-foreground: #16a34a;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #d4d4d8;
+  --input: #e4e4e7;
+  --ring: #16a34a;
+
+  --neon-green: #16a34a;
+  --neon-green-dim: #15803d;
+  --neon-green-bright: #22c55e;
+}
+
+@theme inline {
+  --font-sans: 'Satoshi', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  
+  /* Custom Obsidian colors */
+  --color-neon: var(--neon-green);
+  --color-neon-dim: var(--neon-green-dim);
+  --color-neon-bright: var(--neon-green-bright);
+  --color-obsidian: var(--obsidian-bg);
+  --color-obsidian-surface: var(--obsidian-surface);
+  --color-obsidian-card: var(--obsidian-card);
+  --color-obsidian-elevated: var(--obsidian-elevated);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Neon Glow Effects */
+.neon-glow {
+  box-shadow: 0 0 20px rgba(74, 222, 128, 0.3), 0 0 40px rgba(74, 222, 128, 0.1);
+}
+
+.neon-glow-sm {
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.2), 0 0 20px rgba(74, 222, 128, 0.1);
+}
+
+.neon-glow-text {
+  text-shadow: 0 0 10px rgba(74, 222, 128, 0.5), 0 0 20px rgba(74, 222, 128, 0.3);
+}
+
+.neon-border {
+  border-color: var(--neon-green);
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.3), inset 0 0 10px rgba(74, 222, 128, 0.1);
+}
+
+/* Avatar Ring Glow */
+.avatar-ring {
+  background: conic-gradient(from 0deg, var(--neon-green), var(--neon-green-dim), var(--neon-green));
+  padding: 3px;
+  border-radius: 50%;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--obsidian-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--obsidian-elevated);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #333;
+}
+
+/* Pixel Editor Canvas */
+.pixel-canvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* Tool Button Active State */
+.tool-active {
+  background: var(--neon-green);
+  color: var(--obsidian-bg);
+}
+
+/* Pill Button Selected State - Centralized for consistency */
+.pill-selected {
+  background: var(--neon-green) !important;
+  color: var(--obsidian-bg) !important;
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+}
+
+.pill-unselected {
+  background: var(--obsidian-card) !important;
+  color: var(--muted-foreground) !important;
+}
+
+.pill-unselected:hover {
+  background: var(--obsidian-elevated) !important;
+  color: var(--foreground) !important;
+}
+
+/* Color Swatch */
+.color-swatch {
+  border: 2px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.color-swatch.active {
+  border-color: var(--neon-green);
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+}
+
+/* Skin Card Hover */
+.skin-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.skin-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Bottom Navigation */
+.bottom-nav-item {
+  transition: all 0.2s ease;
+}
+
+.bottom-nav-item.active {
+  color: var(--neon-green);
+}
+
+.bottom-nav-item.active .nav-icon {
+  filter: drop-shadow(0 0 6px rgba(74, 222, 128, 0.5));
+}
+
+/* Loading Shimmer */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--obsidian-card) 25%,
+    var(--obsidian-elevated) 50%,
+    var(--obsidian-card) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Pulse Animation for Generate Button */
+@keyframes neon-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(74, 222, 128, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(74, 222, 128, 0.6), 0 0 40px rgba(74, 222, 128, 0.3);
+  }
+}
+
+.neon-pulse {
+  animation: neon-pulse 2s ease-in-out infinite;
+}

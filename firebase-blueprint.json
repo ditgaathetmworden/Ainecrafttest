@@ -1,0 +1,56 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile with details, settings, and statistic counters",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique user ID matching request.auth.uid" },
+        "username": { "type": "string", "description": "Unique username used inside the application" },
+        "displayName": { "type": "string" },
+        "bio": { "type": "string" },
+        "avatarUrl": { "type": "string" },
+        "publicProfile": { "type": "boolean" },
+        "skinsCreated": { "type": "number" },
+        "totalDownloads": { "type": "number" },
+        "followers": { "type": "number" },
+        "following": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "username", "createdAt"]
+    },
+    "Skin": {
+      "title": "Skin",
+      "description": "Minecraft skins designed and potentially published by users",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "thumbnailUrl": { "type": "string" },
+        "format": { "type": "string", "enum": ["64x64", "128x128"] },
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "authorAvatar": { "type": "string" },
+        "likes": { "type": "number" },
+        "downloads": { "type": "number" },
+        "isPublished": { "type": "boolean" },
+        "tags": { "type": "array" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "imageUrl", "format", "authorId", "likes", "downloads", "isPublished", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Stores user profiles with biological data, settings, and stats"
+    },
+    "/skins/{skinId}": {
+      "schema": "Skin",
+      "description": "Stores crafted skins created by users, globally searchable"
+    }
+  }
+}

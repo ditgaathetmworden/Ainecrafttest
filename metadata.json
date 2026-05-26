@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Remix: Remix: Kraftedit",
+  "description": "A premium Minecraft Skin Editor. Generate skins via AI, edit pixel-by-pixel, or explore the gallery.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
