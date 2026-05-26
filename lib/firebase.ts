@@ -3,11 +3,21 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import firebaseConfig from '../firebase-applet-config.json';
 
-// Avoid initialising duplicate apps during Next.js Hot Reloads
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+// Ensure this only runs on the client or when in a safe environment.
+// For SSR, return a dummy/empty object.
+const isBrowser = typeof window !== 'undefined';
 
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId); /* CRITICAL: The app will break without this line */
-export const auth = getAuth(app);
+const app = isBrowser 
+  ? (getApps().length === 0 
+      ? initializeApp({
+          ...firebaseConfig,
+          apiKey: process.env.FIREBASE_API_KEY || 'dummy-key-for-ssr'
+        }) 
+      : getApp())
+  : ({} as any);
+
+export const auth = isBrowser ? getAuth(app) : ({} as any);
+export const db = isBrowser ? getFirestore(app) : ({} as any);
 
 export enum OperationType {
   CREATE = 'create',
@@ -17,6 +27,7 @@ export enum OperationType {
   GET = 'get',
   WRITE = 'write',
 }
+//... (keep existing interfaces handleFirestoreError and exported functions)
 
 export interface FirestoreErrorInfo {
   error: string;
