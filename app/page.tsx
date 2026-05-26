@@ -61,7 +61,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="flex h-screen flex-col bg-background">
+    <div className="flex h-screen flex-col bg-background pb-16">
       {/* Header */}
       <header className="shrink-0 border-b border-border bg-obsidian-surface/95 backdrop-blur-lg">
         <div className="flex h-12 items-center justify-center px-4">
