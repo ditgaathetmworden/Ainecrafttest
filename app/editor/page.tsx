@@ -86,16 +86,18 @@ export default function EditorPage() {
             setCurrentColor(extractedPalette[0])
           }
         } else {
-          // Fallback to blank skin if no default provided
-          const blankSkin = createBlankSkin('64x64')
-          setSkinImageData(blankSkin)
+          // Fallback to default skin if no other provided
+          const imageData = await loadSkinFromUrl('/default-skin.png')
+          setSkinImageData(imageData)
           setSkinFormat('64x64')
+          setSkinUrl(imageDataToDataUrl(imageData))
         }
       } catch (error) {
         console.error('Failed to load skin:', error)
-        const blankSkin = createBlankSkin('64x64')
-        setSkinImageData(blankSkin)
+        const imageData = await loadSkinFromUrl('/default-skin.png')
+        setSkinImageData(imageData)
         setSkinFormat('64x64')
+        setSkinUrl(imageDataToDataUrl(imageData))
       } finally {
         setIsLoading(false)
       }

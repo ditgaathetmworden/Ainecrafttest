@@ -78,8 +78,8 @@ function buildCameraPos(part: BodyPart, face: BodyFace): CameraPos {
   }
 }
 
-// Default Steve skin from Minecraft textures (reliable source)
-const DEFAULT_SKIN = 'https://textures.minecraft.net/texture/1a4af718455d4aab528e7a61f86fa25e6a369d1768dcb13f7df319a713eb810b'
+// Default Steve skin
+const DEFAULT_SKIN = '/default-skin.png'
 
 export function SkinViewer3D({
   skinUrl,
@@ -160,10 +160,12 @@ export function SkinViewer3D({
 
       viewerRef.current = viewer
 
-      // Load initial skin or fallback Steve skin
+      // Load skin: use provided skinUrl if available, otherwise use DEFAULT_SKIN
       viewer.loadSkin(skinUrl || DEFAULT_SKIN).then(() => {
         setIsLoaded(true)
-      }).catch(() => {
+      }).catch((e) => {
+        console.error('Failed to load skin:', e)
+        // Fallback to default
         viewer?.loadSkin(DEFAULT_SKIN).then(() => {
           setIsLoaded(true)
         }).catch(() => {
