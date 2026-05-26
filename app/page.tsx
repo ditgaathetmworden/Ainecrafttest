@@ -61,10 +61,10 @@ export default function HomePage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background pb-16">
+    <div className="flex h-screen flex-col bg-background">
       {/* Header */}
       <header className="shrink-0 border-b border-border bg-obsidian-surface/95 backdrop-blur-lg">
-        <div className="flex h-12 items-center justify-between px-4">
+        <div className="flex h-12 items-center justify-center px-4">
           <h1 className="text-xs font-bold tracking-wide">
             <span className="text-neon">AI</span>
             <span className="text-foreground"> Generator</span>
@@ -73,17 +73,16 @@ export default function HomePage() {
       </header>
 
       {/* Main Content */}
-      <main className="flex flex-1 flex-col">
+      <main className="flex flex-1 flex-col overflow-hidden">
         {/* 3D Preview Section */}
         <section 
           className="relative flex-1 overflow-hidden"
           style={{ backgroundImage: 'url(/minecraft-background.jpg)', backgroundSize: 'cover', backgroundPosition: 'center' }}
         >
-          <div className="mx-auto flex h-full max-w-md items-center justify-center px-4">
+          <div className="mx-auto flex h-full w-full max-w-md items-center justify-center">
             <SkinViewer3D
               skinUrl={generatedSkin || DEFAULT_SKIN}
-              width={280}
-              height={320}
+              className="h-full w-full"
               animation="none"
               autoRotate={true}
               autoRotateSpeed={0.5}
