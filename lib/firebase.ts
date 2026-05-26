@@ -11,7 +11,7 @@ const app = isBrowser
   ? (getApps().length === 0 
       ? initializeApp({
           ...firebaseConfig,
-          apiKey: process.env.FIREBASE_API_KEY || 'dummy-key-for-ssr'
+          apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'missing-key-for-firebase'
         }) 
       : getApp())
   : ({} as any);
